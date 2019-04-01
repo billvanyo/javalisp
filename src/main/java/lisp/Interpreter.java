@@ -142,19 +142,21 @@ public class Interpreter {
             else if (function == CONS) value = cons(car(argValues), cadr(argValues));
             else if (function == LIST) value = argValues;
             else if (function == NULLP) value = car(argValues) == NIL ? T : NIL;
+            else if (function == NOT) value = car(argValues) == NIL ? T : NIL;
             else if (function == EQ) value = car(argValues) == cadr(argValues) ? T : NIL;
             else if (function == ATOMP) value = car(argValues).isAtom() ? T : NIL;
             else if (function == SYMBOLP) value = car(argValues).isSymbol() ? T : NIL;
             else if (function == NUMBERP) value = car(argValues).isNumber() ? T : NIL;
-            else if (function == SUB1) value = number(((Number) numberCheck(car(argValues))).value() - 1);
-            else if (function == ADD1) value = number(((Number) numberCheck(car(argValues))).value() + 1);
+            else if (function == SUB1) value = number(numberValue(car(argValues)) - 1);
+            else if (function == ADD1) value = number(numberValue(car(argValues)) + 1);
             else if (function == ZEROP) value = car(argValues) == ZERO ? T : NIL;
             else if (function == LESSP) value = (numberValue(car(argValues)) < numberValue(cadr(argValues))) ? T : NIL;
             else if (function == GREATERP) value = (numberValue(car(argValues)) > numberValue(cadr(argValues))) ? T : NIL;
-            else if (function == TIMES)
-                value = reduce(argValues, (n, m) -> number(numberValue(n) * numberValue(m)), ONE);
-            else if (function == PLUS)
-                value = reduce(argValues, (n, m) -> number(numberValue(n) + numberValue(m)), ZERO);
+            else if (function == TIMES) value = reduce(argValues, (n, m) -> number(numberValue(n) * numberValue(m)), ONE);
+            else if (function == PLUS) value = reduce(argValues, (n, m) -> number(numberValue(n) + numberValue(m)), ZERO);
+            else if (function == MINUS) value = number(numberValue(car(argValues)) - numberValue(cadr(argValues)));
+            else if (function == DIV) value = number(numberValue(car(argValues)) / numberValue(cadr(argValues)));
+            else if (function == MOD) value = number(numberValue(car(argValues)) % numberValue(cadr(argValues)));
             else {
                 SExpression fVal = assoc((Symbol) function, env);
                 if (fVal == NIL) throw new InvalidFunctionException("undefined function " + function.toString());
@@ -177,17 +179,15 @@ public class Interpreter {
 
     private void traceApplyEntry(SExpression function, SExpression argValues, SExpression env) {
         traceLevel++;
-        printStream.print(indent() + "APPLY:\n" + indent() + "\tfunction=");
+        printStream.print(indent() + ">APPLY: ");
         function.print(printStream);
-        printStream.print("\n" + indent() + "\targValues=");
+        printStream.print("  ");
         argValues.print(printStream);
-        printStream.print("\n" + indent() + "\tenv=");
-        env.print(printStream);
         printStream.println();
     }
 
     private void traceApplyReturn(SExpression value) {
-        printStream.print(indent() + "APPLY:\n" + indent() + "\tvalue=");
+        printStream.print(indent() + "<APPLY: ");
         value.print(printStream);
         printStream.println();
         traceLevel--;
@@ -195,15 +195,13 @@ public class Interpreter {
 
     private void traceEvalEntry(SExpression expr, SExpression env) {
         traceLevel++;
-        printStream.print(indent() + "EVAL:\n" + indent() + "\texpr=");
+        printStream.print(indent() + ">EVAL: ");
         expr.print(printStream);
-        printStream.print("\n" + indent() + "\tenv=");
-        env.print(printStream);
         printStream.println();
     }
 
     private void traceEvalReturn(SExpression value) {
-        printStream.print(indent() + "EVAL:\n" + indent() + "\tvalue=");
+        printStream.print(indent() + "<EVAL: ");
         value.print(printStream);
         printStream.println();
         traceLevel--;
@@ -257,19 +255,17 @@ public class Interpreter {
 
     private void traceExpandMacroEntry(SExpression params, SExpression argExprs, SExpression body, SExpression env) {
         traceLevel++;
-        printStream.print(indent() + "EXPAND MACRO:\n" + indent() + "\tparams=");
+        printStream.print(indent() + ">EXPAND MACRO: ");
         params.print(printStream);
-        printStream.print("\n" + indent() + "\targExprs=");
+        printStream.print("  ");
         argExprs.print(printStream);
-        printStream.print("\n" + indent() + "\tbody=");
+        printStream.print("  ");
         body.print(printStream);
-        printStream.print("\n" + indent() + "\tenv= ");
-        env.print(printStream);
         printStream.println();
     }
 
     private void traceExpandMacroReturn(SExpression value) {
-        printStream.print(indent() + "EXPAND MACRO:\n" + indent() + "\tvalue=");
+        printStream.print(indent() + "<EXPAND MACRO: ");
         value.print(printStream);
         printStream.println();
         traceLevel--;

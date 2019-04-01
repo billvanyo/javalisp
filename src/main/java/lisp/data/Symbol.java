@@ -33,6 +33,8 @@ public class Symbol extends Atom {
     public static final Symbol PLUS = symbol("PLUS");
     public static final Symbol MINUS = symbol("MINUS");
     public static final Symbol TIMES = symbol("TIMES");
+    public static final Symbol DIV = symbol("DIV");
+    public static final Symbol MOD = symbol("MOD");
     public static final Symbol ADD1 = symbol("ADD1");
     public static final Symbol SUB1 = symbol("SUB1");
     public static final Symbol ZEROP = symbol("ZEROP");
