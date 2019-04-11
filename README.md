@@ -15,7 +15,7 @@ Using maven, the interactive interpreter can be run by running:
 
 `mvn compile`
 
-`mvn exec:java -Dexec.mainClass=lisp.Interpreter`
+`mvn exec:exec`
 
 Exit the interactive interpreter by evaluating `NIL` or `()`.
 
