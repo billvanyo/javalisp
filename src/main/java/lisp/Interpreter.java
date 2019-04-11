@@ -29,28 +29,39 @@ public class Interpreter {
         interpreter.readEvalPrintLoop();
     }
 
-    void readEvalPrintLoop() throws LispException {
+    void readEvalPrintLoop() {
         readEvalPrintLoop(inputStream, printStream);
     }
 
-    void readEvalPrintLoop(InputStream inputStream, PrintStream printStream) throws LispException {
+    void readEvalPrintLoop(InputStream inputStream, PrintStream printStream) {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        Parser parser = new Parser(br);
+        Parser parser = null;
+        try {
+            parser = new Parser(br);
+        } catch (LispIOException e) {
+            printStream.println(e.getMessage());
+            return;
+        }
         SExpression expression;
         SExpression value;
         while (true) {
             try {
-                expression = parser.readExpression();
-                if (expression == NIL) return;
-                expression.print(printStream);
-                printStream.println("\n");
-                try {
-                    value = eval(expression, globalEnv);
-                    value.print(printStream);
-                    printStream.println("\n");
-                } catch (LispException e) {
-                    printStream.println("exception: " + e.getMessage() + "\n");
-                    //e.printStackTrace();
+                expression = parser.read();
+                if (expression == null) {
+                    printStream.println("incorrect syntax");
+                } else
+                    if (expression == NIL) return;
+                else {
+                        expression.print(printStream);
+                        printStream.println("\n");
+                        try {
+                            value = eval(expression, globalEnv);
+                            value.print(printStream);
+                            printStream.println("\n");
+                        } catch (LispException e) {
+                            printStream.println("exception: " + e.getMessage() + "\n");
+                            //e.printStackTrace();
+                        }
                 }
             } catch (ParsingException e) {
                 printStream.println("parsing exception: " + e.getMessage() + "\n");
@@ -157,6 +168,7 @@ public class Interpreter {
             else if (function == MINUS) value = number(numberValue(car(argValues)) - numberValue(cadr(argValues)));
             else if (function == DIV) value = number(numberValue(car(argValues)) / numberValue(cadr(argValues)));
             else if (function == MOD) value = number(numberValue(car(argValues)) % numberValue(cadr(argValues)));
+            else if (function == EVAL) value = eval(car(argValues), env);
             else {
                 SExpression fVal = assoc((Symbol) function, env);
                 if (fVal == NIL) throw new InvalidFunctionException("undefined function " + function.toString());

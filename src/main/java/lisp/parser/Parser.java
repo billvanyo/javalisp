@@ -19,6 +19,14 @@ public class Parser {
         this.lispTokenStream = new LispTokenStream(input);
     }
 
+    public SExpression read() throws ParsingException {
+        SExpression expr = readExpression();
+        if (expr == null) {
+            throw new ParsingException("unexpected ')' token");
+        }
+        return expr;
+    }
+
     public SExpression readExpression() throws ParsingException {
         String token = lispTokenStream.nextToken();
         if (token == null) return NIL;  // EOF when loading file
@@ -29,7 +37,7 @@ public class Parser {
             if (car == null) return NIL;
             else return cons(car, readCdr());
         } else if (")".equals(token)) {
-            return null; //Symbol.NIL;
+            return null;
         } else if ("'".equals(token)) {
             return cons(QUOTE, cons(readExpression(), NIL));
         } else if ("`".equals(token)) {

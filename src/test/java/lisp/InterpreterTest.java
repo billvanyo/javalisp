@@ -1,7 +1,6 @@
 package lisp;
 
 import lisp.data.SExpression;
-import lisp.data.Symbol;
 import lisp.exceptions.InvalidArgumentException;
 import lisp.exceptions.InvalidFunctionException;
 import lisp.exceptions.LispException;
@@ -9,7 +8,6 @@ import lisp.parser.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
@@ -25,7 +23,7 @@ class InterpreterTest {
 
     private static SExpression sexpr(String str) throws LispException {
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        return p.readExpression();
+        return p.read();
     }
 
     private static String eval(String exprStr) throws LispException {

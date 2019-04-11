@@ -16,7 +16,7 @@ public class ConsTest {
     public void iterate_through_list() throws LispException {
         String listString = "(a b c)";
         Parser p = new Parser(new BufferedReader(new StringReader(listString)));
-        SExpression lispList = p.readExpression();
+        SExpression lispList = p.read();
 
         Iterator<SExpression> iterator = lispList.iterator();
 
