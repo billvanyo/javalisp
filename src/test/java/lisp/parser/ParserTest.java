@@ -1,7 +1,6 @@
 package lisp.parser;
 
 import lisp.exceptions.LispException;
-import lisp.exceptions.LispIOException;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -15,7 +14,7 @@ class ParserTest {
     void empty_list() throws LispException {
         String str = "()";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("NIL", parsed);
     }
 
@@ -23,7 +22,7 @@ class ParserTest {
     void nil() throws LispException {
         String str = "NIL";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("NIL", parsed);
     }
 
@@ -31,7 +30,7 @@ class ParserTest {
     void dotted_pair1() throws LispException {
         String str = "(a . b)";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("(A . B)", parsed);
     }
 
@@ -39,7 +38,7 @@ class ParserTest {
     void dotted_pair2() throws LispException {
         String str = "(a . nil)";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("(A)", parsed);
     }
 
@@ -47,7 +46,7 @@ class ParserTest {
     void dotted_pair3() throws LispException {
         String str = "(a . (b c))";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("(A B C)", parsed);
     }
 
@@ -55,7 +54,7 @@ class ParserTest {
     void dotted_pair4() throws LispException {
         String str = "(a b c . d))";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("(A B C . D)", parsed);
     }
 
@@ -63,7 +62,7 @@ class ParserTest {
     void quote() throws LispException {
         String str = "'(a b)";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals("(QUOTE (A B))", parsed);
     }
 
@@ -72,7 +71,7 @@ class ParserTest {
         String str = "(defmacro let (alist body) `((lambda ,(mapcar 'car alist) ,body) ,@(mapcar (compose 'car 'cdr) alist)))";
         String expected = "(DEFMACRO LET (ALIST BODY) (BACKQUOTE ((LAMBDA (COMMA (MAPCAR (QUOTE CAR) ALIST)) (COMMA BODY)) (COMMA_AT (MAPCAR (COMPOSE (QUOTE CAR) (QUOTE CDR)) ALIST)))))";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals(expected, parsed);
     }
 
@@ -83,7 +82,7 @@ class ParserTest {
         // (ABC 123 "this is a string" 456 "" "   " "." "123")
         String expected = "(ABC 123 \"this is a string\" 456 \"\" \"   \" \".\" \"123\")";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals(expected, parsed);
     }
 
@@ -92,7 +91,7 @@ class ParserTest {
         String str = "(a b c d) ; this is a comment";
         String expected = "(A B C D)";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals(expected, parsed);
     }
 
@@ -101,7 +100,7 @@ class ParserTest {
         String str = "(a b c ; this is a comment\n;comment d e)\n1 2)";
         String expected = "(A B C 1 2)";
         Parser p = new Parser(new BufferedReader(new StringReader(str)));
-        String parsed = p.readExpression().toString();
+        String parsed = p.read().toString();
         assertEquals(expected, parsed);
     }
 
