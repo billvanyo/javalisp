@@ -1,4 +1,4 @@
-(defun mapcar (f l) (if (nullp l) nil (cons (f (car l)) (mapcar f (cdr l)))))
+(defun mapcar (f l) (if (null l) nil (cons (f (car l)) (mapcar f (cdr l)))))
 
 (defun compose (f1 f2) (lambda (x) (f1 (f2 x))))
 

@@ -152,10 +152,10 @@ public class Interpreter {
             else if (function == CDR) value = cdr(consCheck(car(argValues)));
             else if (function == CONS) value = cons(car(argValues), cadr(argValues));
             else if (function == LIST) value = argValues;
-            else if (function == NULLP) value = car(argValues) == NIL ? T : NIL;
+            else if (function == NULL) value = car(argValues) == NIL ? T : NIL;
             else if (function == NOT) value = car(argValues) == NIL ? T : NIL;
             else if (function == EQ) value = car(argValues) == cadr(argValues) ? T : NIL;
-            else if (function == ATOMP) value = car(argValues).isAtom() ? T : NIL;
+            else if (function == ATOM) value = car(argValues).isAtom() ? T : NIL;
             else if (function == SYMBOLP) value = car(argValues).isSymbol() ? T : NIL;
             else if (function == NUMBERP) value = car(argValues).isNumber() ? T : NIL;
             else if (function == SUB1) value = number(numberValue(car(argValues)) - 1);

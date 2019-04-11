@@ -14,8 +14,8 @@ public class Symbol extends Atom {
     public static final Symbol IF = symbol("IF");
     public static final Symbol COND = symbol("COND");
     public static final Symbol EQ = symbol("EQ");
-    public static final Symbol NULLP = symbol("NULLP");
-    public static final Symbol ATOMP = symbol("ATOMP");
+    public static final Symbol NULL = symbol("NULL");
+    public static final Symbol ATOM = symbol("ATOM");
     public static final Symbol SYMBOLP = symbol("SYMBOLP");
     public static final Symbol NUMBERP = symbol("NUMBERP");
     public static final Symbol LAMBDA = symbol("LAMBDA");

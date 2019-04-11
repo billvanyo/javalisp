@@ -46,7 +46,7 @@ class InterpreterTest {
         String str;
         String value;
 
-        str = "(defun mapcar (f l) (if (nullp l) nil (cons (f (car l)) (mapcar f (cdr l)))))";
+        str = "(defun mapcar (f l) (if (null l) nil (cons (f (car l)) (mapcar f (cdr l)))))";
         value = eval(str);
 
         str = "(defun compose (f1 f2) (lambda (x) (f1 (f2 x))))";
