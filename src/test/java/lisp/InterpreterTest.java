@@ -34,7 +34,8 @@ class InterpreterTest {
 
     @Test
     public void factorial_combinator_test() throws LispException {
-        String str = "(((LAMBDA (F) ((LAMBDA (X) (F X)) (LAMBDA (X) (F X)))) (LAMBDA (F) (LAMBDA (N) (IF (ZEROP N) 1 (TIMES N ((F F) (SUB1 N))))))) 10)";
+        String str = "(((LAMBDA (F) ((LAMBDA (X) (F X)) (LAMBDA (X) (F X)))) " +
+                      "(LAMBDA (F) (LAMBDA (N) (IF (ZEROP N) 1 (* N ((F F) (1- N))))))) 10)";
         String value = eval(str);
 
         assertEquals("3628800", value);
@@ -54,11 +55,11 @@ class InterpreterTest {
         str = "(defmacro let (alist body) `((lambda ,(mapcar 'car alist) ,body) ,@(mapcar (compose 'car 'cdr) alist)))";
         value = eval(str);
 
-        str = "(let ((a 1) (b 2)) (plus a b))";
+        str = "(let ((a 1) (b 2)) (+ a b))";
         value = eval(str);
         assertEquals("3", value);
 
-        str = "(let ((a 3) (b 5)) (let ((x (times a b)) (y (plus a b))) (list x y)))";
+        str = "(let ((a 3) (b 5)) (let ((x (* a b)) (y (+ a b))) (list x y)))";
         value = eval(str);
         assertEquals("(15 8)", value);
     }
@@ -68,7 +69,7 @@ class InterpreterTest {
         String str;
         String value;
 
-        str = "(defun recurse (n m) (if (zerop n) (lambda () m) (recurse (sub1 n) (times m n))))";
+        str = "(defun recurse (n m) (if (zerop n) (lambda () m) (recurse (1- n) (* m n))))";
         value = eval(str);
 
         str = "(defun fact (m) ((recurse m 1)))";
@@ -104,13 +105,13 @@ class InterpreterTest {
         String str;
         String value;
 
-        str = "(defun sum (x y) (if (zerop y) x (sum (add1 x) (sub1 y))))";
+        str = "(defun sum (x y) (if (zerop y) x (sum (1+ x) (1- y))))";
         value = eval(str);
 
-        str = "(defun prod (x y) (if (zerop y) 0 (sum x (prod x (sub1 y)))))";
+        str = "(defun prod (x y) (if (zerop y) 0 (sum x (prod x (1- y)))))";
         value = eval(str);
 
-        str = "(defun power (x y) (if (zerop y) 1 (prod x (power x (sub1 y)))))";
+        str = "(defun power (x y) (if (zerop y) 1 (prod x (power x (1- y)))))";
         value = eval(str);
 
         str = "(sum 3 3)";
@@ -139,10 +140,10 @@ class InterpreterTest {
     @Test
     public void exception_test3() throws LispException {
         String value;
-        assertThrows(InvalidArgumentException.class, ()-> eval("(plus 1 2 3 'atom 4 5 6)"));
+        assertThrows(InvalidArgumentException.class, ()-> eval("(+ 1 2 3 'atom 4 5 6)"));
         assertThrows(InvalidFunctionException.class, ()-> eval("(1 2 3 'atom 4 5 6)"));
         // test that exception doesn't kill interpreter
-        value = eval("(plus 1 2 3 4 5 6)");
+        value = eval("(+ 1 2 3 4 5 6)");
         assertEquals("21", value);
     }
 

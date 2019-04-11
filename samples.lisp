@@ -18,19 +18,19 @@
 (defun perms (l) (if (nullp l) '(()) (mapappend (lambda (p) (insert (car l) p)) (perms (cdr l)))))
 
 ; standard recursive factorial
-(defun factorial (n) (if (zerop n) 1 (times n (factorial (sub1 n)))))
+(defun factorial (n) (if (zerop n) 1 (* n (factorial (1- n)))))
 
 ; length of a list
-(defun length (l) (if (nullp l) 0 (add1 (length (cdr l)))))
+(defun length (l) (if (nullp l) 0 (1+ (length (cdr l)))))
 
 ; list of integers from n down to 1
-(defun ints (n) (if (zerop n) '() (cons n (ints (sub1 n)))))
+(defun ints (n) (if (zerop n) '() (cons n (ints (1- n)))))
 
 ; less standard and much less efficient implementation of factorial function
 (defun badfact (n) (length (perms (ints n))))
 
 ; recursive factorial without defining a named function, using a variant of the Y combinator
-((lambda (f x) (f f x)) (lambda (f n) (if (zerop n) 1 (times n (f f (sub1 n))))) 6)
+((lambda (f x) (f f x)) (lambda (f n) (if (zerop n) 1 (* n (f f (1- n))))) 6)
 
 (factorial 6)
 
